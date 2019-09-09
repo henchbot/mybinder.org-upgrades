@@ -194,7 +194,7 @@ class henchBotMyBinder:
 
         if repo == 'repo2docker':
             commit_message = 'repo2docker: https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
-                self.commit_info['repo2docker']['live'].strip('.dirty').split('.')[-1][1:], self.commit_info['repo2docker']['latest'].strip('.dirty').split('.')[-1][1:])
+                self.commit_info['repo2docker']['live'].split('.dirty')[0].split('.')[-1][1:], self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             commit_message = 'binderhub: https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
                 self.commit_info['binderhub']['live'], self.commit_info['binderhub']['latest'])
@@ -256,8 +256,8 @@ class henchBotMyBinder:
         '''
         if repo == 'repo2docker':
             compare_url = 'https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
-                                self.commit_info['repo2docker']['live'].strip('.dirty').split('.')[-1][1:], 
-                                self.commit_info['repo2docker']['latest'].strip('.dirty').split('.')[-1][1:])
+                                self.commit_info['repo2docker']['live'].split('.dirty')[0].split('.')[-1][1:], 
+                                self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
             associated_prs = self.get_associated_prs(compare_url)
             body = '\n'.join(['This is a repo2docker version bump. See the link below for a diff of new changes:\n', compare_url + ' \n'] + associated_prs)
 
