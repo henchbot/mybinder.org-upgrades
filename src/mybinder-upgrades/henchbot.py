@@ -264,7 +264,7 @@ class henchBotMyBinder:
         elif repo == 'binderhub':
             compare_url = 'https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
                                 self.commit_info['binderhub']['live'], 
-                                self.commit_info['binderhub']['latest'])
+                                self.commit_info['binderhub']['latest'].split('.')[-1])
             associated_prs = self.get_associated_prs(compare_url)
             body = '\n'.join(['This is a binderhub version bump. See the link below for a diff of new changes:\n', compare_url + ' \n'] + associated_prs)
 
