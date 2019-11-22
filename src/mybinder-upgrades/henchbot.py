@@ -312,7 +312,7 @@ class henchBotMyBinder:
         Get the live JupyterHub SHA from mybinder.org
         '''
         url_binderhub_requirements = "https://raw.githubusercontent.com/jupyterhub/binderhub/{}/helm-chart/binderhub/requirements.yaml".format(
-            self.commit_info['binderhub']['live'])
+            self.commit_info['binderhub']['live'].split('.')[-1])
         requirements = load(requests.get(url_binderhub_requirements).text)
         jupyterhub_dep = [ii for ii in requirements[
             'dependencies'] if ii['name'] == 'jupyterhub'][0]
