@@ -197,7 +197,7 @@ class henchBotMyBinder:
                 self.commit_info['repo2docker']['live'].split('.dirty')[0].split('.')[-1][1:], self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             commit_message = 'binderhub: https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
-                self.commit_info['binderhub']['live'], self.commit_info['binderhub']['latest'])
+                self.commit_info['binderhub']['live'].split('.')[-1], self.commit_info['binderhub']['latest'].split('.')[-1])
 
         subprocess.check_call(['git', 'config', 'user.name', 'henchbot'])
         subprocess.check_call(['git', 'config', 'user.email', 'henchbot.github@gmail.com'])
@@ -263,7 +263,7 @@ class henchBotMyBinder:
 
         elif repo == 'binderhub':
             compare_url = 'https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
-                                self.commit_info['binderhub']['live'], 
+                                self.commit_info['binderhub']['live'].split('.')[-1], 
                                 self.commit_info['binderhub']['latest'].split('.')[-1])
             associated_prs = self.get_associated_prs(compare_url)
             body = '\n'.join(['This is a binderhub version bump. See the link below for a diff of new changes:\n', compare_url + ' \n'] + associated_prs)
