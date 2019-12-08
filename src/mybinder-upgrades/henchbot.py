@@ -160,12 +160,12 @@ class henchBotMyBinder:
 
         if not existing_pr:
             updated_yaml = requirements_yaml.replace(
-                "version: 0.2.0-{}".format(self.commit_info[upgrade]['live']),
-                "version: 0.2.0-{}".format(self.commit_info[upgrade]['latest']))
+                "version: {}".format(self.commit_info[upgrade]['live']),
+                "version: {}".format(self.commit_info[upgrade]['latest']))
         else:
             updated_yaml = requirements_yaml.replace(
-                "version: 0.2.0-{}".format(existing_pr['prev_latest']),
-                "version: 0.2.0-{}".format(self.commit_info[upgrade]['latest']))    
+                "version: {}".format(existing_pr['prev_latest']),
+                "version: {}".format(self.commit_info[upgrade]['latest']))    
 
         fname = 'mybinder/requirements.yaml'
         with open(fname, 'w', encoding='utf8') as f:
@@ -303,8 +303,7 @@ class henchBotMyBinder:
         requirements = load(requests.get(url_requirements).text)
         binderhub_dep = [ii for ii in requirements[
             'dependencies'] if ii['name'] == 'binderhub'][0]
-        bhub_live = binderhub_dep['version'].split('-')[-1]
-        self.commit_info['binderhub']['live'] = bhub_live
+        self.commit_info['binderhub']['live'] = binderhub_dep['version']
 
 
     def get_jupyterhub_live(self):
@@ -357,7 +356,7 @@ class henchBotMyBinder:
             updates_sorted = sorted(
                 helm_chart_yaml['entries'][repo],
                 key=lambda k: k['created'])
-            self.commit_info[repo]['latest'] = updates_sorted[-1]['version'].split('-')[-1]
+            self.commit_info[repo]['latest'] = updates_sorted[-1]['version']
             print(repo, self.commit_info[repo]['live'], self.commit_info[repo]['latest'])
 
 
