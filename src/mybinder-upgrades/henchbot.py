@@ -197,7 +197,7 @@ class henchBotMyBinder:
                 self.commit_info['repo2docker']['live'].split('.dirty')[0].split('.')[-1][1:], self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             commit_message = 'binderhub: https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
-                self.commit_info['binderhub']['live'].split('.')[-1], self.commit_info['binderhub']['latest'].split('.')[-1])
+                self.commit_info['binderhub']['live'].split('.')[-1][-7:], self.commit_info['binderhub']['latest'].split('.')[-1][-7:])
 
         subprocess.check_call(['git', 'config', 'user.name', 'henchbot'])
         subprocess.check_call(['git', 'config', 'user.email', 'henchbot.github@gmail.com'])
@@ -263,8 +263,8 @@ class henchBotMyBinder:
 
         elif repo == 'binderhub':
             compare_url = 'https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
-                                self.commit_info['binderhub']['live'].split('.')[-1], 
-                                self.commit_info['binderhub']['latest'].split('.')[-1])
+                                self.commit_info['binderhub']['live'].split('.')[-1][-7:], 
+                                self.commit_info['binderhub']['latest'].split('.')[-1][-7:])
             associated_prs = self.get_associated_prs(compare_url)
             body = '\n'.join(['This is a binderhub version bump. See the link below for a diff of new changes:\n', compare_url + ' \n'] + associated_prs)
 
@@ -306,19 +306,6 @@ class henchBotMyBinder:
         self.commit_info['binderhub']['live'] = binderhub_dep['version']
 
 
-    def get_jupyterhub_live(self):
-        '''
-        Get the live JupyterHub SHA from mybinder.org
-        '''
-        url_binderhub_requirements = "https://raw.githubusercontent.com/jupyterhub/binderhub/{}/helm-chart/binderhub/requirements.yaml".format(
-            self.commit_info['binderhub']['live'].split('.')[-1])
-        requirements = load(requests.get(url_binderhub_requirements).text)
-        jupyterhub_dep = [ii for ii in requirements[
-            'dependencies'] if ii['name'] == 'jupyterhub'][0]
-        jhub_live = jupyterhub_dep['version'].split('-')[-1]
-        self.commit_info['jupyterhub']['live'] = jhub_live
-
-
     def get_repo2docker_live(self):
         '''
         Get the live r2d SHA from mybinder.org
@@ -344,7 +331,7 @@ class henchBotMyBinder:
         print('repo2docker', self.commit_info['repo2docker']['live'], self.commit_info['repo2docker']['latest'])
 
 
-    def get_bhub_jhub_latest(self):
+    def get_bhub_latest(self):
         '''
         Get the latest bhub SHA from the helm chart
         '''
@@ -352,12 +339,11 @@ class henchBotMyBinder:
         url_helm_chart = 'https://raw.githubusercontent.com/jupyterhub/helm-chart/gh-pages/index.yaml'
         helm_chart_yaml = load(requests.get(url_helm_chart).text)
 
-        for repo in ['binderhub', 'jupyterhub']:
-            updates_sorted = sorted(
-                helm_chart_yaml['entries'][repo],
-                key=lambda k: k['created'])
-            self.commit_info[repo]['latest'] = updates_sorted[-1]['version']
-            print(repo, self.commit_info[repo]['live'], self.commit_info[repo]['latest'])
+        updates_sorted = sorted(
+            helm_chart_yaml['entries']['binderhub'],
+            key=lambda k: k['created'])
+        self.commit_info['binderhub']['latest'] = updates_sorted[-1]['version']
+        print('binderhub', self.commit_info['binderhub']['live'], self.commit_info['binderhub']['latest'])
 
 
     def get_new_commits(self):
@@ -370,12 +356,11 @@ class henchBotMyBinder:
 
         print('Fetching the SHA for live BinderHub and repo2docker...')
         self.get_binderhub_live()
-        self.get_jupyterhub_live()
         self.get_repo2docker_live()
 
         print('Fetching latest commit SHA for BinderHub and repo2docker...')
         self.get_repo2docker_latest()
-        self.get_bhub_jhub_latest()
+        self.get_bhub_latest()
 
 
 if __name__ == '__main__':
