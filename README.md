@@ -1,6 +1,6 @@
 # Automating mybinder.org dependency upgrades in 10 steps
 
-[BinderHub](https://github.com/jupyterhub/binderhub) and [repo2docker](https://github.com/jupyter/repo2docker) are key components of the service [mybinder.org](https://mybinder.org); depending on them for the latest functionality demands that mybinder.org be continuously upgraded with respect to these repositories to ensure users are getting the best experience. Moreover, to avoid merging in massive updates at irregular intervals, it is desirable to merge updates in frequent intervals of smaller changes in order to more easily identify any breaking changes from the dependency upgrades.
+[BinderHub](https://github.com/jupyterhub/binderhub) and [repo2docker](https://github.com/jupyterhub/repo2docker) are key components of the service [mybinder.org](https://mybinder.org); depending on them for the latest functionality demands that mybinder.org be continuously upgraded with respect to these repositories to ensure users are getting the best experience. Moreover, to avoid merging in massive updates at irregular intervals, it is desirable to merge updates in frequent intervals of smaller changes in order to more easily identify any breaking changes from the dependency upgrades.
 
 While this process done manually only takes a few minutes following processes outlined in the "[Site Reliability Guide](https://mybinder-sre.readthedocs.io/en/latest/)", it's prone to human error messing with all the SHAs and the team must remember to regularly do it in the first place. In the interest of automation, a bot was built to relieve this burden, and we've decided to highlight its functionality in this blogpost!
 
@@ -194,7 +194,7 @@ Now that we've edited the correct files, we can stage and commit the changes. We
 		subprocess.check_call(['git', 'add', fname])
 
 		if repo == 'repo2docker':
-		    commit_message = 'repo2docker: https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
+		    commit_message = 'repo2docker: https://github.com/jupyterhub/repo2docker/compare/{}...{}'.format(
 		        commit_info['repo2docker']['live'],commit_info['repo2docker']['latest'])
 		elif repo == 'binderhub':
 		    commit_message = 'binderhub: https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
@@ -214,7 +214,7 @@ We want the PR to have a nice comment explaining what's happening and linking an
 
 ```python
 		if repo == 'repo2docker':
-		    compare_url = 'https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
+		    compare_url = 'https://github.com/jupyterhub/repo2docker/compare/{}...{}'.format(
 		                        commit_info['repo2docker']['live'], 
 		                        commit_info['repo2docker']['latest'])
 		    body = '\n'.join(['This is a repo2docker version bump. See the link below for a diff of new changes:\n', compare_url + ' \n'])

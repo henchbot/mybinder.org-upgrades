@@ -193,7 +193,7 @@ class henchBotMyBinder:
             subprocess.check_call(['git', 'add', f])
 
         if repo == 'repo2docker':
-            commit_message = 'repo2docker: https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
+            commit_message = 'repo2docker: https://github.com/jupyterhub/repo2docker/compare/{}...{}'.format(
                 self.commit_info['repo2docker']['live'].split('.dirty')[0].split('.')[-1][1:], self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
         elif repo == 'binderhub':
             commit_message = 'binderhub: https://github.com/jupyterhub/binderhub/compare/{}...{}'.format(
@@ -255,7 +255,7 @@ class henchBotMyBinder:
         Formats a text body for the PR
         '''
         if repo == 'repo2docker':
-            compare_url = 'https://github.com/jupyter/repo2docker/compare/{}...{}'.format(
+            compare_url = 'https://github.com/jupyterhub/repo2docker/compare/{}...{}'.format(
                                 self.commit_info['repo2docker']['live'].split('.dirty')[0].split('.')[-1][1:], 
                                 self.commit_info['repo2docker']['latest'].split('.dirty')[0].split('.')[-1][1:])
             associated_prs = self.get_associated_prs(compare_url)
