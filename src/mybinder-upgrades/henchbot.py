@@ -65,7 +65,7 @@ class henchBotMyBinder:
         Check if a fork exists for henchbot already
         '''
         res = requests.get('https://api.github.com/users/henchbot/repos')
-        self.fork_exists = bool([x for x in res.json() if x['name'] == 'mybinder.org-deploy'])
+        self.fork_exists = bool([x for x in res.json() if x['name'] == 'mybinder.org-deploy-1'])
 
 
     def remove_fork(self):
@@ -73,7 +73,7 @@ class henchBotMyBinder:
         Remove a henchbot fork of mybinder.org
         '''
         res = requests.delete(
-            'https://api.github.com/repos/henchbot/mybinder.org-deploy',
+            'https://api.github.com/repos/henchbot/mybinder.org-deploy-1',
             headers={
                 'Authorization': 'token {}'.format(TOKEN)})
         self.fork_exists = False
@@ -93,14 +93,14 @@ class henchBotMyBinder:
         Clone henchbot's mybinder.org fork
         '''
         subprocess.check_call(
-            ['git', 'clone', 'https://github.com/henchbot/mybinder.org-deploy'])
+            ['git', 'clone', 'https://github.com/henchbot/mybinder.org-deploy-1'])
 
 
     def delete_old_branch(self, repo):
         '''
         Delete an old branch in the henchbot fork (if it was merged)
         '''
-        res = requests.get('https://api.github.com/repos/henchbot/mybinder.org-deploy/branches')
+        res = requests.get('https://api.github.com/repos/henchbot/mybinder.org-deploy-1/branches')
         if repo+'_bump' in [x['name'] for x in res.json()]:
             subprocess.check_call(
                 ['git', 'push', '--delete', 'origin', repo+'_bump'])
@@ -116,7 +116,7 @@ class henchBotMyBinder:
             if self.fork_exists:  # fork exists for other repo and old branch for this repo
                 self.delete_old_branch()
                 subprocess.check_call(
-                    ['git', 'pull', 'https://github.com/jupyterhub/mybinder.org-deploy.git', 'master'])
+                    ['git', 'pull', 'https://github.com/jupyterhub/mybinder.org-deploy-1.git', 'master'])
             subprocess.check_call(
                 ['git', 'checkout', '-b', repo+'_bump'])
         else:
@@ -202,7 +202,7 @@ class henchBotMyBinder:
         subprocess.check_call(['git', 'config', 'user.name', 'henchbot'])
         subprocess.check_call(['git', 'config', 'user.email', 'henchbot.github@gmail.com'])
         subprocess.check_call(['git', 'commit', '-m', commit_message])
-        subprocess.check_call(['git', 'push', 'https://henchbot:{}@github.com/henchbot/mybinder.org-deploy'.format(TOKEN), repo+'_bump'])
+        subprocess.check_call(['git', 'push', 'https://henchbot:{}@github.com/henchbot/mybinder.org-deploy-1'.format(TOKEN), repo+'_bump'])
 
 
     def upgrade_repo_commit(self, existing_pr, repo):
@@ -213,12 +213,12 @@ class henchBotMyBinder:
             self.make_fork()
         self.clone_fork()
 
-        os.chdir('mybinder.org-deploy')
+        os.chdir('mybinder.org-deploy-1')
         self.checkout_branch(existing_pr, repo)
         files_changed = self.edit_files(repo, existing_pr)
         self.add_commit_push(files_changed, repo)
         os.chdir('..')
-        shutil.rmtree('mybinder.org-deploy')
+        shutil.rmtree('mybinder.org-deploy-1')
 
         self.create_update_pr(repo, existing_pr)
 
@@ -299,7 +299,7 @@ class henchBotMyBinder:
         Get the live BinderHub SHA from mybinder.org
         '''
         # Load master requirements
-        url_requirements = "https://raw.githubusercontent.com/jupyterhub/mybinder.org-deploy/master/mybinder/requirements.yaml"
+        url_requirements = "https://raw.githubusercontent.com/jupyterhub/mybinder.org-deploy-1/master/mybinder/requirements.yaml"
         requirements = load(requests.get(url_requirements).text)
         binderhub_dep = [ii for ii in requirements[
             'dependencies'] if ii['name'] == 'binderhub'][0]
@@ -311,7 +311,7 @@ class henchBotMyBinder:
         Get the live r2d SHA from mybinder.org
         '''
         # Load master repo2docker
-        url_helm_chart = "https://raw.githubusercontent.com/jupyterhub/mybinder.org-deploy/master/mybinder/values.yaml"
+        url_helm_chart = "https://raw.githubusercontent.com/jupyterhub/mybinder.org-deploy-1/master/mybinder/values.yaml"
         helm_chart = requests.get(url_helm_chart)
         helm_chart = load(helm_chart.text)
         r2d_live = helm_chart['binderhub']['config'][
