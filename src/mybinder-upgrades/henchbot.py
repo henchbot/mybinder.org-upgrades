@@ -336,8 +336,8 @@ class henchBotMyBinder:
         '''
         Get the latest bhub SHA from the helm chart
         '''
-        # Load latest binderhub and jupyterhub commits
-        url_helm_chart = 'https://raw.githubusercontent.com/jupyterhub/helm-chart/gh-pages/index.yaml'
+        # Load latest published binderhub and jupyterhub commits
+        url_helm_chart = 'https://jupyterhub.github.io/helm-chart/index.yaml'
         helm_chart_yaml = load(requests.get(url_helm_chart).text)
 
         updates_sorted = sorted(
