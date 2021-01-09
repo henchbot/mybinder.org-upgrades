@@ -5,7 +5,6 @@ import os
 import shutil
 import time
 
-CHART_YAML_PATH = 'mybinder/Chart.yaml'
 REPO_API = 'https://api.github.com/repos/jupyterhub/mybinder.org-deploy/'
 TOKEN = os.environ.get('HENCHBOT_TOKEN')
 
@@ -156,7 +155,7 @@ class henchBotMyBinder:
         '''
         Update the SHA to latest for bhub
         '''
-        with open(CHART_YAML_PATH, 'r', encoding='utf8') as f:
+        with open('mybinder/requirements.yaml', 'r', encoding='utf8') as f:
             requirements_yaml = f.read()
 
         if not existing_pr:
@@ -168,7 +167,8 @@ class henchBotMyBinder:
                 "version: {}".format(existing_pr['prev_latest']),
                 "version: {}".format(self.commit_info[upgrade]['latest']))    
 
-        with open(CHART_YAML_PATH, 'w', encoding='utf8') as f:
+        fname = 'mybinder/requirements.yaml'
+        with open(fname, 'w', encoding='utf8') as f:
             f.write(updated_yaml)
 
         return [fname]
@@ -299,7 +299,7 @@ class henchBotMyBinder:
         Get the live BinderHub SHA from mybinder.org
         '''
         # Load master requirements
-        url_requirements = "https://raw.githubusercontent.com/jupyterhub/mybinder.org-deploy/master/{}".format(CHART_YAML_PATH)
+        url_requirements = "https://raw.githubusercontent.com/jupyterhub/mybinder.org-deploy/master/mybinder/requirements.yaml"
         requirements = load(requests.get(url_requirements).text)
         print(requirements)
         binderhub_dep = [ii for ii in requirements[
