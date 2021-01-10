@@ -171,7 +171,7 @@ class henchBotMyBinder:
         with open(CHART_YAML_PATH, 'w', encoding='utf8') as f:
             f.write(updated_yaml)
 
-        return [fname]
+        return [CHART_YAML_PATH]
 
 
     def edit_files(self, upgrade, existing_pr):
