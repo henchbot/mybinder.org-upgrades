@@ -18,7 +18,7 @@ def normalize_r2d_tags(old, new):
         # it is (probably) a tag, use it direcctly
         old = old
 
-    if 'dirty' in new or ".g":
+    if 'dirty' in new or ".g" in new:
         # it is a version string from which we can get a SHA
         new = new.split('.dirty')[0].split('.')[-1][1:]
     else:
