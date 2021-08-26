@@ -2,6 +2,8 @@
 
 [BinderHub](https://github.com/jupyterhub/binderhub) and [repo2docker](https://github.com/jupyterhub/repo2docker) are key components of the service [mybinder.org](https://mybinder.org); depending on them for the latest functionality demands that mybinder.org be continuously upgraded with respect to these repositories to ensure users are getting the best experience. Moreover, to avoid merging in massive updates at irregular intervals, it is desirable to merge updates in frequent intervals of smaller changes in order to more easily identify any breaking changes from the dependency upgrades.
 
+This bot is deployed at https://dashboard.heroku.com/apps/ancient-chamber-80926. Merging PRs into `master` in this repository will cause an automatic deploy to Heroku.
+
 While this process done manually only takes a few minutes following processes outlined in the "[Site Reliability Guide](https://mybinder-sre.readthedocs.io/en/latest/)", it's prone to human error messing with all the SHAs and the team must remember to regularly do it in the first place. In the interest of automation, a bot was built to relieve this burden, and we've decided to highlight its functionality in this blogpost!
 
 At a high level, this is what we want our bot to do:
