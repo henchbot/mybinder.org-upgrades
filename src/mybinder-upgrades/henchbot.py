@@ -2,6 +2,7 @@ from yaml import safe_load as load
 import requests
 import subprocess
 import os
+import re
 import shutil
 import time
 
@@ -149,18 +150,17 @@ class henchBotMyBinder:
         with open('mybinder/values.yaml', 'r', encoding='utf8') as f:
             values_yaml = f.read()
 
+        # Old image is jupyter/repo2docker
+        # New one is quay.io/jupyterhub/repo2docker
+        pattern_base = r'([^\s]+/)?jupyter(hub)?/repo2docker:'
         if not existing_pr:
-            updated_yaml = values_yaml.replace(
-                "jupyter/repo2docker:{}".format(
-                    self.commit_info[upgrade]['live']),
-                "jupyter/repo2docker:{}".format(
-                    self.commit_info[upgrade]['latest']))
+            updated_yaml = re.sub(
+                pattern_base + re.escape(self.commit_info[upgrade]['live']),
+                self.commit_info[upgrade]['repo_latest'], values_yaml)
         else:
-            updated_yaml = values_yaml.replace(
-                "jupyter/repo2docker:{}".format(
-                    existing_pr['prev_latest']),
-                "jupyter/repo2docker:{}".format(
-                    self.commit_info[upgrade]['latest']))   
+            updated_yaml = re.sub(
+                pattern_base + re.escape(existing_pr['prev_latest']),
+                self.commit_info[upgrade]['repo_latest'], values_yaml)
 
         fname = 'mybinder/values.yaml'
         with open(fname, 'w', encoding='utf8') as f:
@@ -342,10 +342,19 @@ class henchBotMyBinder:
         Get the latest r2d SHA from DockerHub
         '''
         # Load latest r2d commit from dockerhub
-        url = "https://hub.docker.com/v2/repositories/jupyter/repo2docker/tags/"
+        url = 'https://quay.io/api/v1/repository/jupyterhub/repo2docker/tag/?onlyActiveTags=true&limit=5'
         resp = requests.get(url)
-        r2d_master = resp.json()['results'][0]['name']
-        self.commit_info['repo2docker']['latest'] = r2d_master
+        tags = resp.json()['tags']
+        tag = None
+        for t in tags:
+            if t['name'] not in ('latest', 'main'):
+                tag = t
+                break
+        if not tag:
+            raise Exception('Failed to find repo2docker tag: {}'.format(tags))
+        r2d_latest_tag = tag['name']
+        self.commit_info['repo2docker']['latest'] = r2d_latest_tag
+        self.commit_info['repo2docker']['repo_latest'] = f'quay.io/jupyterhub/repo2docker:{r2d_latest_tag}'
         print('repo2docker', self.commit_info['repo2docker']['live'], self.commit_info['repo2docker']['latest'])
 
 
